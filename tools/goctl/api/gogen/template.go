@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 
-	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/pathx"
 )
 
 //go:embed api.tpl

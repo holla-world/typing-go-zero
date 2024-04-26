@@ -4,10 +4,10 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/zeromicro/go-zero/tools/goctl/pkg/golang"
-	"github.com/zeromicro/go-zero/tools/goctl/util/console"
-	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
-	"github.com/zeromicro/go-zero/tools/goctl/vars"
+	"github.com/holla-world/typing-go-zero/tools/goctl/pkg/golang"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/console"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/pathx"
+	"github.com/holla-world/typing-go-zero/tools/goctl/vars"
 )
 
 func Install(cacheDir, name string, installFn func(dest string) (string, error)) (string, error) {

@@ -12,15 +12,15 @@ import (
 	"time"
 
 	"github.com/gookit/color"
+	apiformat "github.com/holla-world/typing-go-zero/tools/goctl/api/format"
+	"github.com/holla-world/typing-go-zero/tools/goctl/api/parser"
+	apiutil "github.com/holla-world/typing-go-zero/tools/goctl/api/util"
+	"github.com/holla-world/typing-go-zero/tools/goctl/config"
+	"github.com/holla-world/typing-go-zero/tools/goctl/pkg/golang"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/pathx"
 	"github.com/spf13/cobra"
 	"github.com/zeromicro/go-zero/core/logx"
-	apiformat "github.com/zeromicro/go-zero/tools/goctl/api/format"
-	"github.com/zeromicro/go-zero/tools/goctl/api/parser"
-	apiutil "github.com/zeromicro/go-zero/tools/goctl/api/util"
-	"github.com/zeromicro/go-zero/tools/goctl/config"
-	"github.com/zeromicro/go-zero/tools/goctl/pkg/golang"
-	"github.com/zeromicro/go-zero/tools/goctl/util"
-	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
 )
 
 const tmpFile = "%s-%d"

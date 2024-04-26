@@ -7,8 +7,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/zeromicro/go-zero/tools/goctl/api/spec"
-	"github.com/zeromicro/go-zero/tools/goctl/api/util"
+	"github.com/holla-world/typing-go-zero/tools/goctl/api/spec"
+	"github.com/holla-world/typing-go-zero/tools/goctl/api/util"
 )
 
 const (

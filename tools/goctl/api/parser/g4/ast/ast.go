@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/holla-world/typing-go-zero/tools/goctl/api/parser/g4/gen/api"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/console"
 	"github.com/zeromicro/antlr"
-	"github.com/zeromicro/go-zero/tools/goctl/api/parser/g4/gen/api"
-	"github.com/zeromicro/go-zero/tools/goctl/util/console"
 )
 
 type (

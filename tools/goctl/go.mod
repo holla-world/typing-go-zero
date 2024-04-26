@@ -1,4 +1,4 @@
-module github.com/zeromicro/go-zero/tools/goctl
+module github.com/holla-world/typing-go-zero/tools/goctl
 // todo mod name
 go 1.21
 

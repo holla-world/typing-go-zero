@@ -10,10 +10,10 @@ import (
 	"text/template"
 
 	"github.com/gookit/color"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/env"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/pathx"
 	"github.com/spf13/cobra"
-	"github.com/zeromicro/go-zero/tools/goctl/util"
-	"github.com/zeromicro/go-zero/tools/goctl/util/env"
-	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
 )
 
 const (

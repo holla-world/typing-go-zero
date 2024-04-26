@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/zeromicro/go-zero/tools/goctl/api/spec"
-	"github.com/zeromicro/go-zero/tools/goctl/config"
-	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
-	"github.com/zeromicro/go-zero/tools/goctl/vars"
+	"github.com/holla-world/typing-go-zero/tools/goctl/api/spec"
+	"github.com/holla-world/typing-go-zero/tools/goctl/config"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/pathx"
+	"github.com/holla-world/typing-go-zero/tools/goctl/vars"
 )
 
 //go:embed main.tpl

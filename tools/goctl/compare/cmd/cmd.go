@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"github.com/holla-world/typing-go-zero/tools/goctl/compare/testdata"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/console"
 	"github.com/spf13/cobra"
-	"github.com/zeromicro/go-zero/tools/goctl/compare/testdata"
-	"github.com/zeromicro/go-zero/tools/goctl/util/console"
 )
 
 var rootCmd = &cobra.Command{

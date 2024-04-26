@@ -5,10 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	conf "github.com/zeromicro/go-zero/tools/goctl/config"
-	"github.com/zeromicro/go-zero/tools/goctl/rpc/parser"
-	"github.com/zeromicro/go-zero/tools/goctl/util/format"
-	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
+	conf "github.com/holla-world/typing-go-zero/tools/goctl/config"
+	"github.com/holla-world/typing-go-zero/tools/goctl/rpc/parser"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/format"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/pathx"
 )
 
 //go:embed config.tpl

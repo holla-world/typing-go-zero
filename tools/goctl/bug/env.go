@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/zeromicro/go-zero/tools/goctl/internal/version"
+	"github.com/holla-world/typing-go-zero/tools/goctl/internal/version"
 )
 
 type env map[string]string

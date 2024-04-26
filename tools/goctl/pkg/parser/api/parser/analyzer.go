@@ -5,12 +5,12 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/holla-world/typing-go-zero/tools/goctl/api/spec"
+	"github.com/holla-world/typing-go-zero/tools/goctl/pkg/parser/api/ast"
+	"github.com/holla-world/typing-go-zero/tools/goctl/pkg/parser/api/importstack"
+	"github.com/holla-world/typing-go-zero/tools/goctl/pkg/parser/api/placeholder"
+	"github.com/holla-world/typing-go-zero/tools/goctl/pkg/parser/api/token"
 	"github.com/zeromicro/go-zero/core/lang"
-	"github.com/zeromicro/go-zero/tools/goctl/api/spec"
-	"github.com/zeromicro/go-zero/tools/goctl/pkg/parser/api/ast"
-	"github.com/zeromicro/go-zero/tools/goctl/pkg/parser/api/importstack"
-	"github.com/zeromicro/go-zero/tools/goctl/pkg/parser/api/placeholder"
-	"github.com/zeromicro/go-zero/tools/goctl/pkg/parser/api/token"
 )
 
 // Analyzer analyzes the ast and converts it to spec.

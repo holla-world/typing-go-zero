@@ -1,6 +1,6 @@
 package env
 
-import "github.com/zeromicro/go-zero/tools/goctl/internal/cobrax"
+import "github.com/holla-world/typing-go-zero/tools/goctl/internal/cobrax"
 
 var (
 	sliceVarWriteValue []string

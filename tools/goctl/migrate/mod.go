@@ -6,10 +6,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/holla-world/typing-go-zero/tools/goctl/rpc/execx"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/console"
+	"github.com/holla-world/typing-go-zero/tools/goctl/util/ctx"
 	"github.com/zeromicro/go-zero/core/stringx"
-	"github.com/zeromicro/go-zero/tools/goctl/rpc/execx"
-	"github.com/zeromicro/go-zero/tools/goctl/util/console"
-	"github.com/zeromicro/go-zero/tools/goctl/util/ctx"
 )
 
 const (
