@@ -1,9 +1,10 @@
 package generator
 
 import (
-	"github.com/zeromicro/go-zero/tools/goctl/util/format"
 	"path/filepath"
 	"strings"
+
+	"github.com/zeromicro/go-zero/tools/goctl/util/format"
 
 	conf "github.com/zeromicro/go-zero/tools/goctl/config"
 	"github.com/zeromicro/go-zero/tools/goctl/rpc/parser"
@@ -23,6 +24,7 @@ const (
 	pb       = "pb"
 	protoGo  = "proto-go"
 	call     = "call"
+	xsvc     = "xsvc"
 )
 
 type (
@@ -32,6 +34,7 @@ type (
 		GetEtc() Dir
 		GetInternal() Dir
 		GetConfig() Dir
+		GetXsvc() Dir
 		GetLogic() Dir
 		GetServer() Dir
 		GetSvc() Dir
@@ -60,10 +63,10 @@ type (
 func mkdir(ctx *ctx.ProjectContext, proto parser.Proto, conf *conf.Config, c *ZRpcContext) (DirContext,
 	error) {
 	inner := make(map[string]Dir)
-	etcDir := filepath.Join(ctx.WorkDir, "etc")
+	xvcDir := filepath.Join(filepath.Dir(ctx.WorkDir), "internal", "xsvc")
 	clientDir := filepath.Join(ctx.WorkDir, "client")
 	internalDir := filepath.Join(ctx.WorkDir, "internal")
-	configDir := filepath.Join(internalDir, "config")
+	// configDir := filepath.Join(internalDir, "config")
 	logicDir := filepath.Join(internalDir, "logic")
 	serverDir := filepath.Join(internalDir, "server")
 	svcDir := filepath.Join(internalDir, "svc")
@@ -124,14 +127,6 @@ func mkdir(ctx *ctx.ProjectContext, proto parser.Proto, conf *conf.Config, c *ZR
 			return getChildPackage(ctx.WorkDir, childPath)
 		},
 	}
-	inner[etc] = Dir{
-		Filename: etcDir,
-		Package:  filepath.ToSlash(filepath.Join(ctx.Path, strings.TrimPrefix(etcDir, ctx.Dir))),
-		Base:     filepath.Base(etcDir),
-		GetChildPackage: func(childPath string) (string, error) {
-			return getChildPackage(etcDir, childPath)
-		},
-	}
 	inner[internal] = Dir{
 		Filename: internalDir,
 		Package: filepath.ToSlash(filepath.Join(ctx.Path,
@@ -139,14 +134,6 @@ func mkdir(ctx *ctx.ProjectContext, proto parser.Proto, conf *conf.Config, c *ZR
 		Base: filepath.Base(internalDir),
 		GetChildPackage: func(childPath string) (string, error) {
 			return getChildPackage(internalDir, childPath)
-		},
-	}
-	inner[config] = Dir{
-		Filename: configDir,
-		Package:  filepath.ToSlash(filepath.Join(ctx.Path, strings.TrimPrefix(configDir, ctx.Dir))),
-		Base:     filepath.Base(configDir),
-		GetChildPackage: func(childPath string) (string, error) {
-			return getChildPackage(configDir, childPath)
 		},
 	}
 	inner[logic] = Dir{
@@ -171,6 +158,14 @@ func mkdir(ctx *ctx.ProjectContext, proto parser.Proto, conf *conf.Config, c *ZR
 		Base:     filepath.Base(svcDir),
 		GetChildPackage: func(childPath string) (string, error) {
 			return getChildPackage(svcDir, childPath)
+		},
+	}
+	inner[xsvc] = Dir{
+		Filename: xvcDir,
+		Package:  filepath.ToSlash(filepath.Join(ctx.Path, strings.TrimPrefix(xvcDir, ctx.Dir))),
+		Base:     filepath.Base(xvcDir),
+		GetChildPackage: func(childPath string) (string, error) {
+			return getChildPackage(xvcDir, childPath)
 		},
 	}
 
@@ -236,6 +231,10 @@ func (d *defaultDirContext) GetInternal() Dir {
 
 func (d *defaultDirContext) GetConfig() Dir {
 	return d.inner[config]
+}
+
+func (d *defaultDirContext) GetXsvc() Dir {
+	return d.inner[xsvc]
 }
 
 func (d *defaultDirContext) GetLogic() Dir {

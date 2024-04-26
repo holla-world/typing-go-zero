@@ -1,6 +1,8 @@
 module github.com/zeromicro/go-zero/tools/goctl
+// todo mod name
+go 1.21
 
-go 1.19
+toolchain go1.22.2
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2

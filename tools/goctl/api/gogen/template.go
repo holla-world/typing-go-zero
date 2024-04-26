@@ -1,11 +1,16 @@
 package gogen
 
 import (
+	_ "embed"
 	"fmt"
 
 	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
 )
 
+//go:embed api.tpl
+var apiIdlTemplate string
+
+// 预设模板文件名
 const (
 	category                    = "api"
 	configTemplateFile          = "config.tpl"
@@ -18,8 +23,10 @@ const (
 	routesTemplateFile          = "routes.tpl"
 	routesAdditionTemplateFile  = "route-addition.tpl"
 	typesTemplateFile           = "types.tpl"
+	apiIdlTemplateFile          = "apitemplate.tpl"
 )
 
+// 预设模板文件内容
 var templates = map[string]string{
 	configTemplateFile:          configTemplate,
 	contextTemplateFile:         contextTemplate,
@@ -31,6 +38,7 @@ var templates = map[string]string{
 	routesTemplateFile:          routesTemplate,
 	routesAdditionTemplateFile:  routesAdditionTemplate,
 	typesTemplateFile:           typesTemplate,
+	apiIdlTemplateFile:          apiIdlTemplate,
 }
 
 // Category returns the category of the api files.

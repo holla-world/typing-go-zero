@@ -9,5 +9,6 @@ const (
 	logicDir      = internal + "logic"
 	middlewareDir = internal + "middleware"
 	typesDir      = internal + typesPacket
+	xsvcDir       = internal + "xsvc"
 	groupProperty = "group"
 )

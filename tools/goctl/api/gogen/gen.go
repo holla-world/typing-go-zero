@@ -43,6 +43,8 @@ var (
 
 // GoCommand gen go project files from command line
 func GoCommand(_ *cobra.Command, _ []string) error {
+	// goctl api go  --api入口
+	// todo 自动扫描api文件
 	apiFile := VarStringAPI
 	dir := VarStringDir
 	namingStyle := VarStringStyle
@@ -70,7 +72,12 @@ func GoCommand(_ *cobra.Command, _ []string) error {
 }
 
 // DoGenProject gen go project files with api file
-func DoGenProject(apiFile, dir, style string) error {
+func DoGenProject(apiFile, abs, style string) error {
+	// 初始化，无api文件
+	if apiFile == "zero" {
+		logx.Must(genDoc(abs))
+		apiFile = path.Join(abs, docDir, "client.api")
+	}
 	api, err := parser.Parse(apiFile)
 	if err != nil {
 		return err
@@ -85,21 +92,22 @@ func DoGenProject(apiFile, dir, style string) error {
 		return err
 	}
 
-	logx.Must(pathx.MkdirIfNotExist(dir))
-	rootPkg, err := golang.GetParentPackage(dir)
+	logx.Must(pathx.MkdirIfNotExist(abs))
+	rootPkg, err := golang.GetParentPackage(abs)
 	if err != nil {
 		return err
 	}
 
-	logx.Must(genEtc(dir, cfg, api))
-	logx.Must(genConfig(dir, cfg, api))
-	logx.Must(genMain(dir, rootPkg, cfg, api))
-	logx.Must(genServiceContext(dir, rootPkg, cfg, api))
-	logx.Must(genTypes(dir, cfg, api))
-	logx.Must(genRoutes(dir, rootPkg, cfg, api))
-	logx.Must(genHandlers(dir, rootPkg, cfg, api))
-	logx.Must(genLogic(dir, rootPkg, cfg, api))
-	logx.Must(genMiddleware(dir, cfg, api))
+	// todo 这里生成目录
+	// logx.Must(genEtc(abs, cfg, api))
+	// logx.Must(genConfig(abs, cfg, api))
+	logx.Must(genMain(abs, rootPkg, cfg, api))
+	logx.Must(genServiceContext(abs, rootPkg, cfg, api))
+	logx.Must(genTypes(abs, cfg, api))
+	logx.Must(genRoutes(abs, rootPkg, cfg, api))
+	logx.Must(genHandlers(abs, rootPkg, cfg, api))
+	logx.Must(genLogic(abs, rootPkg, cfg, api))
+	logx.Must(genMiddleware(abs, cfg, api))
 
 	if err := backupAndSweep(apiFile); err != nil {
 		return err

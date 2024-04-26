@@ -3,6 +3,7 @@ package gogen
 import (
 	_ "embed"
 	"fmt"
+	"path"
 	"strings"
 
 	"github.com/zeromicro/go-zero/tools/goctl/api/spec"
@@ -34,10 +35,10 @@ func genServiceContext(dir, rootPkg string, cfg *config.Config, api *spec.ApiSpe
 			fmt.Sprintf("middleware.New%s().%s", strings.Title(name), "Handle"))
 	}
 
-	configImport := "\"" + pathx.JoinPackages(rootPkg, configDir) + "\""
+	importList := "\"" + pathx.JoinPackages(path.Dir(rootPkg), xsvcDir) + "\""
 	if len(middlewareStr) > 0 {
-		configImport += "\n\t\"" + pathx.JoinPackages(rootPkg, middlewareDir) + "\""
-		configImport += fmt.Sprintf("\n\t\"%s/rest\"", vars.ProjectOpenSourceURL)
+		importList += "\n\t\"" + pathx.JoinPackages(rootPkg, middlewareDir) + "\""
+		importList += fmt.Sprintf("\n\t\"%s/rest\"", vars.ProjectOpenSourceURL)
 	}
 
 	return genFile(fileGenConfig{
@@ -49,8 +50,8 @@ func genServiceContext(dir, rootPkg string, cfg *config.Config, api *spec.ApiSpe
 		templateFile:    contextTemplateFile,
 		builtinTemplate: contextTemplate,
 		data: map[string]string{
-			"configImport":         configImport,
-			"config":               "config.Config",
+			"importList":           importList,
+			"xsvc":                 "*xsvc.ServiceContext",
 			"middleware":           middlewareStr,
 			"middlewareAssignment": middlewareAssignment,
 		},

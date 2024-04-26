@@ -25,19 +25,18 @@ type MainServiceTemplateData struct {
 }
 
 // GenMain generates the main file of the rpc service, which is an rpc service program call entry
-func (g *Generator) GenMain(ctx DirContext, proto parser.Proto, cfg *conf.Config,
-	c *ZRpcContext) error {
-	mainFilename, err := format.FileNamingFormat(cfg.NamingFormat, ctx.GetServiceName().Source())
-	if err != nil {
-		return err
-	}
+func (g *Generator) GenMain(ctx DirContext, proto parser.Proto, cfg *conf.Config, c *ZRpcContext) error {
+	// mainFilename, err := format.FileNamingFormat(cfg.NamingFormat, ctx.GetServiceName().Source())
+	// if err != nil {
+	// 	return err
+	// }
 
-	fileName := filepath.Join(ctx.GetMain().Filename, fmt.Sprintf("%v.go", mainFilename))
+	fileName := filepath.Join(ctx.GetMain().Filename, fmt.Sprintf("%v.go", "rpc"))
 	imports := make([]string, 0)
 	pbImport := fmt.Sprintf(`"%v"`, ctx.GetPb().Package)
 	svcImport := fmt.Sprintf(`"%v"`, ctx.GetSvc().Package)
-	configImport := fmt.Sprintf(`"%v"`, ctx.GetConfig().Package)
-	imports = append(imports, configImport, pbImport, svcImport)
+	xsvcImport := fmt.Sprintf(`"%v"`, ctx.GetXsvc().Package)
+	imports = append(imports, xsvcImport, pbImport, svcImport)
 
 	var serviceNames []MainServiceTemplateData
 	for _, e := range proto.Service {
