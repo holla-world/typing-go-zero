@@ -60,8 +60,7 @@ type (
 	}
 )
 
-func mkdir(ctx *ctx.ProjectContext, proto parser.Proto, conf *conf.Config, c *ZRpcContext) (DirContext,
-	error) {
+func mkdir(ctx *ctx.ProjectContext, proto parser.Proto, conf *conf.Config, c *ZRpcContext) (DirContext, error) {
 	inner := make(map[string]Dir)
 	xvcDir := filepath.Join(filepath.Dir(ctx.WorkDir), "internal", "xsvc")
 	clientDir := filepath.Join(ctx.WorkDir, "client")
@@ -73,6 +72,7 @@ func mkdir(ctx *ctx.ProjectContext, proto parser.Proto, conf *conf.Config, c *ZR
 	pbDir := filepath.Join(ctx.WorkDir, proto.GoPackage)
 	protoGoDir := pbDir
 	if c != nil {
+		clientDir = ctx.WorkDir
 		pbDir = c.ProtoGenGrpcDir
 		protoGoDir = c.ProtoGenGoDir
 	}
@@ -188,7 +188,13 @@ func mkdir(ctx *ctx.ProjectContext, proto parser.Proto, conf *conf.Config, c *ZR
 		},
 	}
 
-	for _, v := range inner {
+	for k, v := range inner {
+		if c.IsGenOnlyClient {
+			switch k {
+			case etc, internal, config, logic, server, svc, xsvc:
+				continue
+			}
+		}
 		err := pathx.MkdirIfNotExist(v.Filename)
 		if err != nil {
 			return nil, err

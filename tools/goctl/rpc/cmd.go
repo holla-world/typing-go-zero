@@ -64,7 +64,8 @@ func init() {
 	protocCmdFlags.MarkHidden("go-grpc_opt")
 	protocCmdFlags.MarkHidden("plugin")
 	protocCmdFlags.MarkHidden("proto_path")
-	protocCmdFlags.BoolVarPWithDefaultValue(&cli.VarBoolClient, "client", "c", true)
+	protocCmdFlags.BoolVarPWithDefaultValue(&cli.VarBoolClient, "client", "c", false)
+	protocCmdFlags.BoolVarPWithDefaultValue(&cli.VarBoolOnlyClient, "only-client", "s", false)
 
 	templateCmdFlags.StringVar(&cli.VarStringOutput, "o")
 	templateCmdFlags.StringVar(&cli.VarStringHome, "home")

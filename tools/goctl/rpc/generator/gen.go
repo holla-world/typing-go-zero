@@ -29,7 +29,8 @@ type ZRpcContext struct {
 	// Multiple is the flag to indicate whether the proto file is generated in multiple mode.
 	Multiple bool
 	// Whether to generate rpc client
-	IsGenClient bool
+	IsGenClient     bool
+	IsGenOnlyClient bool
 }
 
 // Generate generates a rpc service, through the proto file,
@@ -72,6 +73,11 @@ func (g *Generator) Generate(zctx *ZRpcContext) error {
 		return err
 	}
 
+	if zctx.IsGenOnlyClient {
+		err = g.GenCall(dirCtx, proto, g.cfg, zctx)
+		console.NewColorConsole().MarkDone()
+		return err
+	}
 	err = g.GenSvc(dirCtx, proto, g.cfg)
 	if err != nil {
 		return err
