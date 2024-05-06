@@ -28,10 +28,9 @@ func genMain(dir, rootPkg string, cfg *config.Config, api *spec.ApiSpec) error {
 	// }
 
 	return genFile(fileGenConfig{
-		dir:    dir,
-		subdir: "",
-		// filename:        filename + ".go",
-		filename:        "api.go",
+		dir:             dir,
+		subdir:          "",
+		filename:        filepath.Base(dir) + ".go",
 		templateName:    "mainTemplate",
 		category:        category,
 		templateFile:    mainTemplateFile,
