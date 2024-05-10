@@ -43,8 +43,8 @@ func genLogicByRoute(dir, rootPkg string, cfg *config.Config, group spec.Group, 
 	var requestString string
 	if len(route.ResponseTypeName()) > 0 {
 		resp := responseGoTypeName(route, typesPacket)
-		responseString = "(resp " + resp + ", err error)"
-		returnString = "return"
+		responseString = "(" + resp + ",error)"
+		returnString = fmt.Sprintf("return &%s.%s{}, nil", typesPacket, route.ResponseTypeName())
 	} else {
 		responseString = "error"
 		returnString = "return nil"
