@@ -31,7 +31,8 @@ func (g *Generator) GenMain(ctx DirContext, proto parser.Proto, cfg *conf.Config
 	// 	return err
 	// }
 
-	fileName := filepath.Join(ctx.GetMain().Filename, fmt.Sprintf("%v.go", "rpc"))
+	base := filepath.Base(ctx.GetMain().Filename)
+	fileName := filepath.Join(ctx.GetMain().Filename, fmt.Sprintf("%v.go", base))
 	imports := make([]string, 0)
 	pbImport := fmt.Sprintf(`"%v"`, ctx.GetPb().Package)
 	svcImport := fmt.Sprintf(`"%v"`, ctx.GetSvc().Package)

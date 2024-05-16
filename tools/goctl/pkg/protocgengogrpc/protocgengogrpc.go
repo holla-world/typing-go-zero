@@ -11,7 +11,7 @@ import (
 
 const (
 	Name = "protoc-gen-go-grpc"
-	url  = "google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest"
+	url  = "google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3.0"
 )
 
 func Install(cacheDir string) (string, error) {
