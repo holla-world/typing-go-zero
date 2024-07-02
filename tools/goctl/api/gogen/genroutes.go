@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/zeromicro/go-zero/core/collection"
+
 	"github.com/zeromicro/go-zero/tools/goctl/api/spec"
 	"github.com/zeromicro/go-zero/tools/goctl/config"
 	"github.com/zeromicro/go-zero/tools/goctl/util/format"
@@ -220,6 +221,7 @@ rest.WithPrefix("%s"),`, g.prefix)
 func genRouteImports(parentPkg string, api *spec.ApiSpec) string {
 	importSet := collection.NewSet()
 	importSet.AddStr(fmt.Sprintf("\"%s\"", pathx.JoinPackages(parentPkg, contextDir)))
+	importSet.AddStr(fmt.Sprintf("\"%s\"", pathx.JoinPackages(parentPkg, middlewareDir)))
 	for _, group := range api.Service.Groups {
 		for _, route := range group.Routes {
 			folder := route.GetAnnotation(groupProperty)
@@ -279,7 +281,7 @@ func getRoutes(api *spec.ApiSpec) ([]group, error) {
 		}
 
 		auth := g.GetAnnotation("auth")
-		if auth != "false" { //默认开启token验证
+		if auth != "false" { // 默认开启token验证
 			groupedRoutes.AuthEnabled = true
 			if len(auth) == 0 || auth == "true" {
 				groupedRoutes.AuthMiddleware = defaultTokenAuthMiddleware
