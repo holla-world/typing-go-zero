@@ -11,6 +11,7 @@ import (
 	"github.com/gookit/color"
 	"github.com/spf13/cobra"
 	"github.com/withfig/autocomplete-tools/integrations/cobra"
+
 	"github.com/zeromicro/go-zero/tools/goctl/api"
 	"github.com/zeromicro/go-zero/tools/goctl/bug"
 	"github.com/zeromicro/go-zero/tools/goctl/config"
@@ -22,6 +23,7 @@ import (
 	"github.com/zeromicro/go-zero/tools/goctl/kube"
 	"github.com/zeromicro/go-zero/tools/goctl/migrate"
 	"github.com/zeromicro/go-zero/tools/goctl/model"
+	"github.com/zeromicro/go-zero/tools/goctl/orm"
 	"github.com/zeromicro/go-zero/tools/goctl/quickstart"
 	"github.com/zeromicro/go-zero/tools/goctl/rpc"
 	"github.com/zeromicro/go-zero/tools/goctl/tpl"
@@ -115,6 +117,7 @@ func init() {
 	rootCmd.SetUsageTemplate(usageTpl)
 	rootCmd.AddCommand(api.Cmd, bug.Cmd, docker.Cmd, kube.Cmd, env.Cmd, gateway.Cmd, model.Cmd)
 	rootCmd.AddCommand(migrate.Cmd, quickstart.Cmd, rpc.Cmd, tpl.Cmd, upgrade.Cmd, config.Cmd)
+	rootCmd.AddCommand(orm.Cmd)
 	rootCmd.Command.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
 	rootCmd.MustInit()
 }

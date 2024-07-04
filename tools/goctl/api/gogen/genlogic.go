@@ -53,6 +53,7 @@ func genLogicByRoute(dir, rootPkg string, cfg *config.Config, group spec.Group, 
 		requestString = "req *" + requestGoTypeName(route, typesPacket)
 	}
 	fullPath := group.Annotation.Properties["prefix"] + route.Path
+	println("fullPath:" + fullPath)
 
 	subDir := getLogicFolderPath(group, route)
 	return genFile(fileGenConfig{
