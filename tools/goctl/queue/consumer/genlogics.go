@@ -22,12 +22,12 @@ func genLogic(dir, rootPkg, name, style string, cfg Consumer) error {
 
 	imports := genLogicImports(rootPkg, cfg.XMsgStructPkg)
 	c := fileGenConfig{
-		dir:             dir,
-		subdir:          "logic",
-		filename:        filename + "logic.go",
-		templateName:    "logicTemplate",
-		category:        "api",
-		templateFile:    "logic.tpl",
+		dir:          dir,
+		subdir:       "logic",
+		filename:     filename + "logic.go",
+		templateName: "logicTemplate",
+		// category:        "api",
+		// templateFile:    "logic.tpl",
 		builtinTemplate: logicTemplate,
 		data: map[string]any{
 			"PkgName":         pkgName,

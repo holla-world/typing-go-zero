@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"sort"
 	"strings"
 
 	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
@@ -37,12 +38,12 @@ func genGroups(dir, rootPkg string, cfg ConsumerCfg) error {
 		return err
 	}
 	c := fileGenConfig{
-		dir:             dir,
-		subdir:          "cmd",
-		filename:        filename,
-		templateName:    "groupTemplate",
-		category:        "api",
-		templateFile:    "group.tpl",
+		dir:          dir,
+		subdir:       "cmd",
+		filename:     filename,
+		templateName: "groupTemplate",
+		// category:        "api",
+		// templateFile:    "group.tpl",
 		builtinTemplate: groupTemplate,
 		data: map[string]any{
 			"PkgName":        pkgName,
@@ -78,6 +79,7 @@ func groups(cfg ConsumerCfg) []Groups {
 	}
 	list := make([]Groups, 0)
 	for _, v := range gs {
+		sort.Strings(v.Handlers)
 		list = append(list, Groups{
 			GroupName: v.GroupName,
 			Handlers:  v.Handlers,

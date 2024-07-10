@@ -25,12 +25,12 @@ func genHandler(dir, rootPkg, name, style string, cfg Consumer) error {
 
 	imports := genHandlerImports(rootPkg, cfg.XMsgStructPkg)
 	return genFile(fileGenConfig{
-		dir:             dir,
-		subdir:          "handler",
-		filename:        filename + "handler.go",
-		templateName:    "handlerTemplate",
-		category:        "api",
-		templateFile:    "handler.tpl",
+		dir:          dir,
+		subdir:       "handler",
+		filename:     filename + "handler.go",
+		templateName: "handlerTemplate",
+		// category:        "api",
+		// templateFile:    "handler.tpl",
 		builtinTemplate: handlerTemplate,
 		data: map[string]any{
 			"PkgName":         pkgName,
