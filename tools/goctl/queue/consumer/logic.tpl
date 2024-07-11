@@ -17,7 +17,7 @@ func New{{.LogicName}}Logic(ctx context.Context, svcCtx *svc.ServiceContext) *{{
 	}
 }
 
-func (l *{{.LogicName}}Logic) Handle{{.LogicName}}(key string, msg *{{.MsgMetaPkgShort}}.{{.MsgMeta}}) error {
+func (l *{{.LogicName}}Logic) {{.LogicName}}(key string, msg *{{.MsgMetaPkgShort}}.{{.MsgMeta}}) error {
 
 	return nil
 }

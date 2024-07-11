@@ -44,5 +44,5 @@ func (c {{.LHandlerName}}Consumer) Consume(key, value string) (err error) {
 	}
 
 	l := logic.New{{.HandlerName}}Logic(ctx, c.svcCtx)
-	return l.Handle{{.HandlerName}}(key, &msg)
+	return l.{{.HandlerName}}(key, &msg)
 }
