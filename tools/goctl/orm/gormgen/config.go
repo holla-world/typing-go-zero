@@ -18,6 +18,9 @@ var (
 		"decimal": func(columnType gorm.ColumnType) (dataType string) {
 			return "float32"
 		},
+		"tinyint": func(columnType gorm.ColumnType) (dataType string) {
+			return "int32"
+		},
 	}
 )
 
