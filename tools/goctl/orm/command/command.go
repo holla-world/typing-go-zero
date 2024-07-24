@@ -11,6 +11,7 @@ import (
 var (
 	// VarStringSrc describes the source file of sql.
 	VarStringSrc string
+	VarStringPkg string
 )
 
 // MysqlDDL generates model code from ddl
@@ -19,5 +20,9 @@ func GenOrm(_ *cobra.Command, _ []string) error {
 	if src == "" {
 		return errors.New("请指定-s, ddl文件不能为空")
 	}
-	return gormgen.Gen(src)
+	pkg := VarStringPkg
+	if pkg == "" {
+		pkg = "query"
+	}
+	return gormgen.Gen(src, pkg)
 }

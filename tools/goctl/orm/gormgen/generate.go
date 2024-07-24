@@ -9,6 +9,7 @@ import (
 	"path"
 	"regexp"
 	"strings"
+	"text/template"
 	"unicode"
 
 	"gorm.io/gen"
@@ -16,9 +17,9 @@ import (
 	"gorm.io/rawsql"
 )
 
-func Gen(src string) error {
+func Gen(src, pkg string) error {
 	g := gen.NewGenerator(gen.Config{
-		OutPath:           "internal/repo/query",
+		OutPath:           "internal/repo/" + pkg,
 		ModelPkgPath:      "internal/repo/model",
 		FieldWithIndexTag: true,
 		FieldWithTypeTag:  true,
@@ -54,7 +55,7 @@ func Gen(src string) error {
 	if err != nil {
 		return err
 	}
-	err = createShardingFile(g)
+	err = createShardingFile(g, pkg)
 	if err != nil {
 		return err
 	}
@@ -285,7 +286,7 @@ func buildReplaceRegexp(c GenerateSpec) []*replaceRegexp {
 	return rrs
 }
 
-func createShardingFile(g *gen.Generator) error {
+func createShardingFile(g *gen.Generator, pkg string) error {
 	filename := fmt.Sprintf("%s/sharding.gen.go", g.OutPath)
 	_, err := os.Stat(filename)
 	if os.IsNotExist(err) {
@@ -294,9 +295,15 @@ func createShardingFile(g *gen.Generator) error {
 			return err
 		}
 		defer file.Close()
-
 		content := shardingTpl()
-		_, err = file.WriteString(content)
+		// 解析模板
+		parse, err := template.New("shard").Parse(content)
+		if err != nil {
+			return err
+		}
+		err = parse.Execute(file, map[string]interface{}{
+			"Package": pkg,
+		})
 		if err != nil {
 			return err
 		}

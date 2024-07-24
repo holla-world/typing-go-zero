@@ -12,4 +12,5 @@ var (
 
 func init() {
 	Cmd.Flags().StringVarP(&command.VarStringSrc, "src", "s")
+	Cmd.Flags().StringVarP(&command.VarStringPkg, "pkg", "p")
 }
