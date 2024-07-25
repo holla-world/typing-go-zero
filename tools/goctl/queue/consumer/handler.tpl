@@ -34,7 +34,7 @@ func (c {{.LHandlerName}}Consumer) Consume(key, value string) (err error) {
 		logx.
 			WithContext(ctx).
 			Errorw(
-				"kafka mgs unmarshal error",
+				"kafka msg unmarshal error",
 				logx.Field("error", err),
 				logx.Field("key", key),
 				logx.Field("msg", value),

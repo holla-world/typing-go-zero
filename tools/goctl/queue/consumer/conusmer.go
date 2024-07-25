@@ -26,7 +26,7 @@ type Consumer struct {
 	XMsgStructPkg  string
 	XMsgStruct     string
 	XGroup         string `json:",optional"`
-	XHandleTimeout int    `json:",default=8"`
+	XHandleTimeout int    `json:",default=5"`
 }
 
 // GoCommand gen go project files from command line
