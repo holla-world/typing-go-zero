@@ -23,8 +23,6 @@ func GenOrm(_ *cobra.Command, _ []string) error {
 	pkg := VarStringPkg
 	if pkg == "" {
 		pkg = "query"
-	} else {
-		pkg = "query/" + pkg
 	}
 	return gormgen.Gen(src, pkg)
 }
