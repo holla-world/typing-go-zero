@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"text/template"
@@ -302,7 +303,7 @@ func createShardingFile(g *gen.Generator, pkg string) error {
 			return err
 		}
 		err = parse.Execute(file, map[string]interface{}{
-			"Package": pkg,
+			"Package": filepath.Base(pkg),
 		})
 		if err != nil {
 			return err
