@@ -15,5 +15,6 @@ func init() {
 	)
 
 	cmdFlags.StringVar(&jobgen.CronFile, "cron")
-	cmdFlags.StringVar(&jobgen.CronFile, "daemon")
+	cmdFlags.StringVar(&jobgen.DaemonFile, "daemon")
+
 }
