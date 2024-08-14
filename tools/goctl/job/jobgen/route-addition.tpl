@@ -1,0 +1,4 @@
+    // {{.desc}}
+    svr.AddRoutes(
+        {{.routes}}
+    )
