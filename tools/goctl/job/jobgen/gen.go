@@ -70,14 +70,17 @@ func GenJob(_ *cobra.Command, _ []string) error {
 		DaemonFile = defaultDaemonFile
 	}
 	if !fileExists(CronFile) {
-		panic(fmt.Sprintf("cronfile:%s not found", CronFile))
+		fmt.Println(fmt.Sprintf("cronfile:%s not found", CronFile))
+		os.Exit(1)
 	}
 	if !fileExists(DaemonFile) {
-		panic(fmt.Sprintf("daemonfile:%s not found", CronFile))
+		fmt.Println(fmt.Sprintf("daemonfile:%s not found", CronFile))
+		os.Exit(1)
 	}
 	err := genJobCode(CronFile, DaemonFile)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	return nil
@@ -91,21 +94,25 @@ func genJobCode(cronFile string, daemonFile string) error {
 	// 读取配置文件
 	cron, err := os.ReadFile(cronFile)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to read YAML file: %v", err))
+		fmt.Println(fmt.Sprintf("Failed to read YAML file: %v", err))
+		os.Exit(1)
 	}
 	daemon, err := os.ReadFile(daemonFile)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to read YAML file: %v", err))
+		fmt.Println(fmt.Sprintf("Failed to read YAML file: %v", err))
+		os.Exit(1)
 	}
 
 	// 解析 YAML 文件
 	err = yaml.Unmarshal(cron, &cfgCron)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to parse YAML file: %v", err))
+		fmt.Println(fmt.Sprintf("Failed to parse YAML file: %v", err))
+		os.Exit(1)
 	}
 	err = yaml.Unmarshal(daemon, &cfgDaemon)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to parse YAML file: %v", err))
+		fmt.Println(fmt.Sprintf("Failed to parse YAML file: %v", err))
+		os.Exit(1)
 	}
 
 	// 合并配置
@@ -146,13 +153,15 @@ func genJobCode(cronFile string, daemonFile string) error {
 			if _, ok := handlerMap[route.Handler]; !ok {
 				handlerMap[route.Handler] = struct{}{}
 			} else {
-				panic(fmt.Sprintf("%s 中存在重复的handler命名: [%s], 请修正", group, route.Handler))
+				fmt.Println(fmt.Sprintf("%s 中存在重复的handler命名: [%s], 请修正", group, route.Handler))
+				os.Exit(1)
 
 			}
 			if _, ok := actionMap[route.Action]; !ok {
 				actionMap[route.Action] = struct{}{}
 			} else {
-				panic(fmt.Sprintf("%s 中存在重复的action: [%s], 请修正", group, route.Action))
+				fmt.Println(fmt.Sprintf("%s 中存在重复的action: [%s], 请修正", group, route.Action))
+				os.Exit(1)
 			}
 
 		}
