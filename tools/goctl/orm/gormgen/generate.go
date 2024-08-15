@@ -61,6 +61,7 @@ func Gen(src, pkg string) error {
 		return err
 	}
 	printDDL(cfg)
+	doDDlCompare(src, cfg)
 	return nil
 }
 
