@@ -65,7 +65,7 @@ func CronExpressionTxt(expr string) (string, error) {
 	parser, _ := cron2.NewDescriptor()
 
 	// 将 cron 表达式转换为自然语言描述
-	description, err := parser.ToDescription(expr, cron2.Locale_zh_CN)
+	description, err := parser.ToDescription(expr, cron2.Locale_en)
 	if err != nil {
 		return "", err
 	}

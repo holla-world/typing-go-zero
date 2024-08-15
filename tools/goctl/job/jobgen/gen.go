@@ -207,6 +207,7 @@ func genHandler(dir, rootPkg, group string, route jobConfig) error {
 			"HandlerName":    handler,
 			"JobType":        route.JobType,
 			"Action":         route.Action,
+			"Desc":           route.Desc,
 		},
 	})
 	return nil
