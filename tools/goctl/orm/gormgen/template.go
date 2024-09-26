@@ -33,7 +33,7 @@ func Sharding[T Numeric](tableName string, tableNum int, key T) string {
 
 // 分表方法模板
 func tbMethodTpl() (*template.Template, error) {
-	tpl := `
+	const tpl = `
 func (q *Query) {{.ModelName}}TB({{.ShardKeyName}} {{.ShardKeyGoType}}) *{{.Instantiation}} {
 	t := Sharding("{{.Name}}", {{.Shards}}, {{.ShardKeyName}})
 	return q.{{.Instantiation}}.Table(t)
@@ -47,7 +47,7 @@ func (q *Query) {{.ModelName}}AssignTBName(name string) *{{.Instantiation}} {
 
 // 分表元数据
 func shardingMetaTpl() (*template.Template, error) {
-	tpl := `
+	const tpl = `
 // 分表数量
 func (m {{.ModelName}}) Shards() int64 {
 	return {{.Shards}}
@@ -74,4 +74,19 @@ func (m {{.ModelName}}) ShardGroup({{.ShardKeyNameCamel}}s []int64) map[int64][]
 }
 `
 	return template.New("meta").Parse(tpl)
+}
+
+func enumsTpl() (*template.Template, error) {
+	const tpl = `{{if .EnumFields}}const (
+	{{range .EnumFields}}{{range .Enums}}{{.Name}} {{.GenType}}= {{.Value}} // {{.Comment}}
+	{{end}}
+	{{end}}
+)
+{{if .EnumFields}}
+type (
+	{{range .EnumFields}}{{.GenType}} {{.NativeType}} // {{.Comment}}
+	{{end}}
+){{end}}	
+{{end}}`
+	return template.New("enum").Parse(tpl)
 }

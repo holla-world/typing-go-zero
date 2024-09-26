@@ -16,6 +16,8 @@ import (
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"gorm.io/rawsql"
+
+	"github.com/zeromicro/go-zero/tools/goctl/pkg/golang"
 )
 
 func Gen(src, pkg string) error {
@@ -44,7 +46,20 @@ func Gen(src, pkg string) error {
 	g.UseDB(db)
 	g.WithDataTypeMap(dataTypeMap)
 	for _, v := range cfg.TableSpec {
-		g.ApplyBasic(g.GenerateModelAs(v.TableName, v.ModelName))
+		modify := gen.FieldModify(func(field gen.Field) gen.Field {
+			delete(field.GORMTag, "column")
+			delete(field.GORMTag, "not null")
+			delete(field.GORMTag, "comment")
+			ef, ok := ParseEnum(v.ModelName, field)
+			if !ok {
+				return field
+			}
+			field.SpecType = ef.GenType
+			v.EnumFields = append(v.EnumFields, ef)
+			return field
+		})
+		mdl := g.GenerateModelAs(v.TableName, v.ModelName, modify)
+		g.ApplyBasic(mdl)
 	}
 
 	g.Execute()
@@ -52,10 +67,17 @@ func Gen(src, pkg string) error {
 	if err != nil {
 		return err
 	}
+
+	err = insertEnums(cfg, g)
+	if err != nil {
+		return err
+	}
+
 	err = insertModelMeth(cfg, g)
 	if err != nil {
 		return err
 	}
+
 	err = createShardingFile(g, pkg)
 	if err != nil {
 		return err
@@ -66,14 +88,14 @@ func Gen(src, pkg string) error {
 }
 
 // parseTables
-func parseTables(file string) ([]Spec, error) {
+func parseTables(file string) ([]*Spec, error) {
 	ddl, err := os.Open(file)
 	if err != nil {
 		return nil, err
 	}
 	defer ddl.Close()
 
-	specs := make([]Spec, 0, 10)
+	specs := make([]*Spec, 0, 10)
 	scanner := bufio.NewScanner(ddl)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -85,7 +107,7 @@ func parseTables(file string) ([]Spec, error) {
 		if strings.HasSuffix(ls, ";") {
 			continue
 		}
-		spec := Spec{}
+		spec := &Spec{}
 		if strings.HasPrefix(ls, "createtable") {
 			spec.TableName = parseTableName(line)
 			spec.ModelName = ToCamelCase(spec.TableName)
@@ -93,7 +115,7 @@ func parseTables(file string) ([]Spec, error) {
 			continue
 		}
 		ts = strings.TrimPrefix(ts, "#@meta")
-		err := json.Unmarshal([]byte(ts), &spec)
+		err := json.Unmarshal([]byte(ts), spec)
 		if err != nil {
 			return nil, fmt.Errorf("解析meta错误: %s\n  line:[%s]", err, line)
 		}
@@ -226,6 +248,68 @@ func insertTbMethod(cfg GenerateSpec, g *gen.Generator) error {
 	return err
 }
 
+func insertEnums(cfg GenerateSpec, g *gen.Generator) error {
+	for _, spec := range cfg.TableSpec {
+		if len(spec.EnumFields) == 0 {
+			continue
+		}
+
+		filePath := path.Join(g.ModelPkgPath, fmt.Sprintf("%s.gen.go", spec.TableName))
+
+		oldFile, err := os.Open(filePath)
+		if err != nil {
+			return err
+		}
+
+		tpl, err := enumsTpl()
+		if err != nil {
+			return err
+		}
+
+		var rendered bytes.Buffer
+		err = tpl.Execute(&rendered, map[string]interface{}{
+			"EnumFields": spec.EnumFields,
+		})
+		if err != nil {
+			return err
+		}
+		enumsStr := rendered.String()
+
+		var (
+			fileContent strings.Builder
+			scanner     = bufio.NewScanner(oldFile)
+		)
+
+		for scanner.Scan() {
+			line := scanner.Text()
+			if strings.HasPrefix(line, "const TableName") {
+				fileContent.WriteString(line + "\n")
+				fileContent.WriteString("\n")
+				fileContent.WriteString(enumsStr + "\n")
+			} else {
+				fileContent.WriteString(line + "\n")
+			}
+		}
+		if err := scanner.Err(); err != nil {
+			return err
+		}
+
+		newFile, err := os.Create(filePath)
+		if err != nil {
+			return err
+		}
+
+		code := golang.FormatCode(fileContent.String())
+		_, err = newFile.WriteString(code)
+		if err != nil {
+			return err
+		}
+		oldFile.Close()
+		newFile.Close()
+	}
+	return nil
+}
+
 func insertModelMeth(cfg GenerateSpec, g *gen.Generator) error {
 	tpl, err := shardingMetaTpl()
 	if err != nil {
@@ -257,6 +341,7 @@ func insertModelMeth(cfg GenerateSpec, g *gen.Generator) error {
 		}
 		defer file.Close()
 
+		appendText = golang.FormatCode(appendText)
 		if _, err := file.WriteString(appendText); err != nil {
 			return err
 		}
