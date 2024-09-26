@@ -1,6 +1,7 @@
 package gormgen
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 	"unicode"
@@ -117,6 +118,9 @@ func ParseEnum(modelName string, gf gen.Field) (ef EnumField, ok bool) {
 				eval := mixed[0]
 				if eval == "" {
 					continue
+				}
+				if gf.Type == "string" {
+					eval = fmt.Sprintf(`"%s"`, eval)
 				}
 
 				name := matchKey(mixed[1])
