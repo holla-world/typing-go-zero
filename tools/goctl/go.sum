@@ -98,8 +98,8 @@ github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0 h1:RtRsiaGvWxcwd8y3BiRZxsylPT8
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0/go.mod h1:TzP6duP4Py2pHLVPPQp42aoYI92+PCrVotyR5e8Vqlk=
 github.com/h2non/parth v0.0.0-20190131123155-b4df798d6542 h1:2VTzZjLZBgl62/EtslCrtky5vbi9dd7HrQPQIx6wqiw=
 github.com/h2non/parth v0.0.0-20190131123155-b4df798d6542/go.mod h1:Ow0tF8D4Kplbc8s8sSb3V2oUCygFHVp8gC3Dn6U4MNI=
-github.com/holla-world/gen v0.0.1 h1:BHR14TKsURCFC51s/txeHWT4KrdJqiQydGEwEJJSLos=
-github.com/holla-world/gen v0.0.1/go.mod h1:a5lq5y3w4g5LMxBcw0wnO6tYUCdNutWODq5LrIt75LE=
+github.com/holla-world/gen v0.0.2 h1:NHwq1fKm6XH7sM6GUyNGX58yIYJLTNMumw+zaME1090=
+github.com/holla-world/gen v0.0.2/go.mod h1:a5lq5y3w4g5LMxBcw0wnO6tYUCdNutWODq5LrIt75LE=
 github.com/iancoleman/strcase v0.3.0 h1:nTXanmYxhfFAMjZL34Ov6gkzEsSJZ5DbhxWjvSASxEI=
 github.com/iancoleman/strcase v0.3.0/go.mod h1:iwCmte+B7n89clKwxIoIXy/HfoL7AsD47ZCWhYzw7ho=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=

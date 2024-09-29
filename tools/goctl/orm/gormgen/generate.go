@@ -45,16 +45,21 @@ func Gen(src, pkg string) error {
 
 	g.UseDB(db)
 	g.WithDataTypeMap(dataTypeMap)
+
 	for _, v := range cfg.TableSpec {
 		modify := gen.FieldModify(func(field gen.Field) gen.Field {
-			delete(field.GORMTag, "column")
-			delete(field.GORMTag, "not null")
-			delete(field.GORMTag, "comment")
+			cleanTags(field)
 			ef, ok := ParseEnum(v.ModelName, field)
 			if !ok {
 				return field
 			}
+			cleanComment(field, ef)
+
+			// 引用类型无需解析枚举值
 			field.SpecType = ef.GenType
+			if ef.IsCite {
+				return field
+			}
 			v.EnumFields = append(v.EnumFields, ef)
 			return field
 		})
@@ -85,6 +90,23 @@ func Gen(src, pkg string) error {
 	printDDL(cfg)
 	doDDlCompare(src, cfg)
 	return nil
+}
+
+func cleanTags(field gen.Field) {
+	delete(field.GORMTag, "column")
+	delete(field.GORMTag, "not null")
+	delete(field.GORMTag, "comment")
+}
+func cleanComment(field gen.Field, ef EnumField) {
+	src := field.ColumnComment
+	src = strings.ReplaceAll(src, ef.GenType, "")
+	src = strings.ReplaceAll(src, "[", "")
+	src = strings.ReplaceAll(src, "]", "")
+	src = strings.Replace(src, "@", "", 1)
+	src = strings.Replace(src, "(", "", 1)
+	src = strings.Replace(src, ")", "", 1)
+	src = strings.Replace(src, ef.OriginKey, "", 1)
+	field.ColumnComment = src
 }
 
 // parseTables
