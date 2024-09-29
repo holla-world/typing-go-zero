@@ -75,77 +75,79 @@ func ParseEnum(modelName string, gf gen.Field) (ef EnumField, ok bool) {
 	if gf == nil {
 		return
 	}
+
 	comment := gf.ColumnComment
 	if !strings.HasPrefix(comment, "@") {
 		return
 	}
 
-	sp := strings.SplitN(comment, ":", 2)
-	if len(sp) > 0 {
-		// 解析头部描述
-		// @status[CommonStatus](状态)
-		head := sp[0]
-		desc := matchDesc(head) // desc=状态
-		// 必须要有描述
-		if desc == "" {
-			return
-		}
-		ok = true
-		ef.Comment = desc
-
-		key := matchKey(head) // key=status
-		ef.OriginKey = key
-		// 是否为引用,引用无需解析枚举值
-		cite := matchCite(head) // cite=CommonStatus
-		if cite != "" {
-			ef.GenType = cite
-			ef.IsCite = true
-			return
-		}
-
-		ef.Name = key
-		if ef.Name == "" {
-			ef.Name = gf.Name
-		}
-		// 转驼峰
-		ef.Name = lo.PascalCase(modelName) + lo.PascalCase(ef.Name)
-		ef.GenType = ef.Name
-		ef.NativeType = gf.Type
-		// 解析尾部枚举值
-		if len(sp) > 1 {
-			enums := strings.Split(sp[1], " ")
-			result := make([]Enum, 0, len(enums))
-			for _, enum := range enums {
-				// 1-wait(待过期)
-				enum = strings.TrimSpace(enum)
-				mixed := strings.Split(enum, "-")
-				if len(mixed) < 1 {
-					continue
-				}
-
-				eval := mixed[0]
-				if eval == "" {
-					continue
-				}
-				if gf.Type == "string" {
-					eval = fmt.Sprintf(`"%s"`, eval)
-				}
-
-				name := matchKey(mixed[1])
-				if name == "" {
-					continue
-				}
-				name = ef.Name + lo.PascalCase(name)
-
-				result = append(result, Enum{
-					Name:    name,
-					Value:   eval,
-					Comment: matchDesc(enum),
-					GenType: ef.GenType,
-				})
-			}
-			ef.Enums = result
-		}
+	head, body, found := strings.Cut(comment, ":")
+	// 解析头部描述
+	// @status[CommonStatus](状态)
+	desc := matchDesc(head) // desc=状态
+	// 必须要有描述
+	if desc == "" {
+		return
 	}
+	ok = true
+	ef.Comment = desc
+
+	key := matchKey(head) // key=status
+	ef.OriginKey = key
+	// 是否为引用,引用无需解析枚举值
+	cite := matchCite(head) // cite=CommonStatus
+	if cite != "" {
+		ef.GenType = cite
+		ef.IsCite = true
+		return
+	}
+
+	ef.Name = key
+	if ef.Name == "" {
+		ef.Name = gf.Name
+	}
+	// 转驼峰
+	ef.Name = lo.PascalCase(modelName) + lo.PascalCase(ef.Name)
+	ef.GenType = ef.Name
+	ef.NativeType = gf.Type
+
+	// 没有主体信息直接返回
+	if !found {
+		return
+	}
+
+	enums := strings.Fields(body)
+	result := make([]Enum, 0, len(enums))
+	for _, enum := range enums {
+		// 1-wait(待过期)
+		enum = strings.TrimSpace(enum)
+		mixed := strings.Split(enum, "-")
+		if len(mixed) < 1 {
+			continue
+		}
+
+		eval := mixed[0]
+		if eval == "" {
+			continue
+		}
+		if strings.EqualFold(gf.Type, "string") {
+			eval = fmt.Sprintf(`"%s"`, eval)
+		}
+
+		name := matchKey(mixed[1])
+		if name == "" {
+			continue
+		}
+		name = ef.Name + lo.PascalCase(name)
+
+		result = append(result, Enum{
+			Name:    name,
+			Value:   eval,
+			Comment: matchDesc(enum),
+			GenType: ef.GenType,
+		})
+	}
+	ef.Enums = result
+
 	return
 }
