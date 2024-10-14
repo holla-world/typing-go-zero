@@ -86,7 +86,10 @@ func enumsTpl() (*template.Template, error) {
 type (
 	{{range .EnumFields}}{{.GenType}} {{.NativeType}} // {{.Comment}}
 	{{end}}
-){{end}}	
+){{end}}
+{{range .EnumFields}}
+func (e {{.GenType}}) Int32() int32  { return int32(e) }
+{{end}}
 {{end}}`
 	return template.New("enum").Parse(tpl)
 }
