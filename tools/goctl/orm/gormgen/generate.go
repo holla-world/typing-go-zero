@@ -202,7 +202,7 @@ func parseTableName(origin string) string {
 func printDDL(cfg GenerateSpec) {
 	// CREATE TABLE post_likes_1 LIKE post_likes;
 	for _, v := range cfg.TableSpec {
-		if v.Shards <= 1 {
+		if v.Shards <= 1 || v.Shards >= 1000 {
 			continue
 		}
 		for i := 0; i < v.Shards; i++ {
@@ -338,7 +338,7 @@ func insertModelMeth(cfg GenerateSpec, g *gen.Generator) error {
 		return err
 	}
 	for _, v := range cfg.TableSpec {
-		if v.Shards <= 1 {
+		if v.Shards <= 1 || v.Shards >= 1000 {
 			continue
 		}
 		var rendered bytes.Buffer
