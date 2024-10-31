@@ -88,7 +88,11 @@ type (
 	{{end}}
 ){{end}}
 {{range .EnumFields}}
+{{if eq .NativeType "string"}}
+func (e {{.GenType}}) String() string  { return string(e) }
+{{else}}
 func (e {{.GenType}}) Int32() int32  { return int32(e) }
+{{end}}
 {{end}}
 {{end}}`
 	return template.New("enum").Parse(tpl)

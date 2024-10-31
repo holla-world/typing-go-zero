@@ -119,8 +119,23 @@ func ParseEnum(modelName string, gf gen.Field) (ef EnumField, ok bool) {
 	enums := strings.Fields(body)
 	result := make([]Enum, 0, len(enums))
 	for _, enum := range enums {
-		// 1-wait(待过期)
+		// 格式a: 1-wait(待过期)
+		// 格式b: wait(待过期)
 		enum = strings.TrimSpace(enum)
+		if strings.EqualFold(gf.Type, "string") {
+			eval := matchKey(enum)
+			if eval == "" {
+				continue
+			}
+			fullName := ef.Name + lo.PascalCase(eval)
+			result = append(result, Enum{
+				Name:    fullName,
+				Value:   fmt.Sprintf(`"%s"`, eval),
+				Comment: matchDesc(enum),
+				GenType: ef.GenType,
+			})
+			continue
+		}
 		mixed := strings.Split(enum, "-")
 		if len(mixed) < 1 {
 			continue
@@ -130,10 +145,6 @@ func ParseEnum(modelName string, gf gen.Field) (ef EnumField, ok bool) {
 		if eval == "" {
 			continue
 		}
-		if strings.EqualFold(gf.Type, "string") {
-			eval = fmt.Sprintf(`"%s"`, eval)
-		}
-
 		name := matchKey(mixed[1])
 		if name == "" {
 			continue
