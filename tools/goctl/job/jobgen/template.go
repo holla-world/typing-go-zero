@@ -10,6 +10,7 @@ const (
 	handlerTemplateFile        = "handler.tpl"
 	routesTemplateFile         = "routes.tpl"
 	routesAdditionTemplateFile = "route-addition.tpl"
+	kconsumerTemplateFile      = "kconsumer.tpl"
 )
 
 //go:embed handler.tpl
@@ -20,3 +21,6 @@ var routesTemplate string
 
 //go:embed route-addition.tpl
 var routesAdditionTemplate string
+
+//go:embed kconsumer.tpl
+var kconsumerTemplate string

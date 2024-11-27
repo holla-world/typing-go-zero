@@ -16,13 +16,16 @@ import (
 )
 
 const (
-	defaultCronFile   = "job/etc/cron.yaml"
-	defaultDaemonFile = "job/etc/daemon.yaml"
-	defaultDir        = "job"
-	handlerShuffix    = "Handler"
-	internal          = "internal/"
-	handlerDir        = internal + "handler"
-	contextDir        = internal + "svc"
+	defaultCronFile      = "job/etc/cron.yaml"
+	defaultDaemonFile    = "job/etc/daemon.yaml"
+	defaultKconsumerFile = "etc/config.yaml"
+	defaultDir           = "job"
+	handlerShuffix       = "Handler"
+	internal             = "internal/"
+	handlerDir           = internal + "handler"
+	contextDir           = internal + "svc"
+	consumerShuffix      = "Consumer"
+	consumerDir          = internal + "kconsumer"
 )
 
 const (
@@ -39,18 +42,31 @@ const (
 )
 
 var (
-	CronFile   string
-	DaemonFile string
+	CronFile      string
+	DaemonFile    string
+	KconsumerFile string
 )
 
 type jobConfig struct {
-	JobType      string
+	JobType      string `yaml:"JobType"`
 	Action       string `yaml:"Action"`       // 执行命令方法
 	Schedule     string `yaml:"Schedule"`     // cron定时参数
 	Replicas     *int32 `yaml:"Replicas"`     // 副本数
 	TestReplicas *int32 `yaml:"TestReplicas"` // 测试环境副本数-不设置取Replicas
 	Desc         string `yaml:"Desc"`         // 命令描述
 	Handler      string `yaml:"Handler"`      // Handler方法名
+}
+
+type KConsumerItem struct {
+	Name  string `yaml:"Name"`
+	Group string `yaml:"Group"` // 消费者组命名
+	Topic string `yaml:"Topic"` // 消费topic
+}
+
+type KConsumerConfig struct {
+	KqConsumer struct {
+		Consumers []KConsumerItem `yaml:"Consumers"`
+	} `yaml:"KqConsumer"`
 }
 
 // fileExists checks if a file exists and is not a directory
@@ -69,15 +85,22 @@ func GenJob(_ *cobra.Command, _ []string) error {
 	if len(DaemonFile) == 0 {
 		DaemonFile = defaultDaemonFile
 	}
+	if len(KconsumerFile) == 0 {
+		KconsumerFile = defaultKconsumerFile
+	}
 	if !fileExists(CronFile) {
 		fmt.Println(fmt.Sprintf("cronfile:%s not found", CronFile))
 		os.Exit(1)
 	}
 	if !fileExists(DaemonFile) {
-		fmt.Println(fmt.Sprintf("daemonfile:%s not found", CronFile))
+		fmt.Println(fmt.Sprintf("daemonfile:%s not found", DaemonFile))
 		os.Exit(1)
 	}
-	err := genJobCode(CronFile, DaemonFile)
+	if !fileExists(KconsumerFile) {
+		fmt.Println(fmt.Sprintf("kconsumerfile:%s not found", KconsumerFile))
+		os.Exit(1)
+	}
+	err := genJobCode(CronFile, DaemonFile, KconsumerFile)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -86,10 +109,11 @@ func GenJob(_ *cobra.Command, _ []string) error {
 	return nil
 }
 
-func genJobCode(cronFile string, daemonFile string) error {
+func genJobCode(cronFile string, daemonFile string, kconsumerFile string) error {
 	// 解析yaml配置文件
 	var cfgCron map[string][]jobConfig
 	var cfgDaemon map[string][]jobConfig
+	var cfgKconsumer *KConsumerConfig
 
 	// 读取配置文件
 	cron, err := os.ReadFile(cronFile)
@@ -98,6 +122,11 @@ func genJobCode(cronFile string, daemonFile string) error {
 		os.Exit(1)
 	}
 	daemon, err := os.ReadFile(daemonFile)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("Failed to read YAML file: %v", err))
+		os.Exit(1)
+	}
+	kconsumer, err := os.ReadFile(kconsumerFile)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("Failed to read YAML file: %v", err))
 		os.Exit(1)
@@ -113,6 +142,10 @@ func genJobCode(cronFile string, daemonFile string) error {
 	if err != nil {
 		fmt.Println(fmt.Sprintf("Failed to parse YAML file: %v", err))
 		os.Exit(1)
+	}
+	err = yaml.Unmarshal(kconsumer, &cfgKconsumer)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("Failed to parse YAML file: %v", err))
 	}
 
 	// 合并配置
@@ -173,10 +206,59 @@ func genJobCode(cronFile string, daemonFile string) error {
 	}
 	// 按模板生成代码
 	genHandlers(dir, rootPkg, mgrCfg)
-	genRoutes(dir, rootPkg, cfgCron, cfgDaemon)
+	_ = genRoutes(dir, rootPkg, cfgCron, cfgDaemon)
+	if cfgKconsumer != nil {
+		genKConsumers(dir, rootPkg, cfgKconsumer.KqConsumer.Consumers)
+	}
 
 	return nil
 }
+
+func genKConsumers(dir, rootPkg string, kconsumerCfgs []KConsumerItem) {
+	for _, kconsumerCfg := range kconsumerCfgs {
+		_ = genKConsumer(dir, rootPkg, kconsumerCfg)
+	}
+}
+
+func genKConsumer(dir, rootPkg string, kconsumerCfg KConsumerItem) error {
+	kConsumerPath := consumerDir
+	consumerHandle := getConsumerName(kconsumerCfg.Name)
+	pkgName := kConsumerPath[strings.LastIndex(kConsumerPath, "/")+1:]
+	filename, err := format.FileNamingFormat(config.DefaultFormat, consumerHandle)
+	if err != nil {
+		return err
+	}
+	return genFile(fileGenConfig{
+		dir:             dir,
+		subdir:          kConsumerPath,
+		filename:        filename + ".go",
+		templateName:    "kconsumerTemplate",
+		category:        category,
+		templateFile:    kconsumerTemplateFile,
+		builtinTemplate: kconsumerTemplate,
+		data: map[string]any{
+			"PkgName":        pkgName,
+			"ImportPackages": genKconsumerImports(rootPkg),
+			"ConsumerHandle": consumerHandle,
+			"ConsumerName":   kconsumerCfg.Name,
+			"ConsumerGroup":  kconsumerCfg.Group,
+			"ConsumerTopic":  kconsumerCfg.Topic,
+		},
+	})
+}
+
+func getConsumerName(name string) string {
+	return toCamelCase(name) + consumerShuffix
+}
+
+func genKconsumerImports(parentPkg string) string {
+	imports := []string{
+		fmt.Sprintf("\"%s\"", pathx.JoinPackages(parentPkg, contextDir)),
+	}
+
+	return strings.Join(imports, "\n\t")
+}
+
 func genHandlers(dir, rootPkg string, routesCfg map[string][]jobConfig) {
 	for group, routes := range routesCfg {
 		for _, route := range routes {
@@ -210,7 +292,6 @@ func genHandler(dir, rootPkg, group string, route jobConfig) error {
 			"Desc":           route.Desc,
 		},
 	})
-	return nil
 }
 
 func getHandlerName(route jobConfig) string {

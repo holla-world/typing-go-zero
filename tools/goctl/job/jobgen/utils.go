@@ -4,6 +4,8 @@ import (
 	"bytes"
 	cron2 "github.com/lnquy/cron"
 	"github.com/robfig/cron/v3"
+	"regexp"
+	"strings"
 	"text/template"
 
 	"github.com/zeromicro/go-zero/tools/goctl/api/util"
@@ -70,4 +72,17 @@ func CronExpressionTxt(expr string) (string, error) {
 		return "", err
 	}
 	return description, nil
+}
+
+func toCamelCase(input string) string {
+	// 正则匹配分隔符（- 或 _）
+	re := regexp.MustCompile(`[-_]`)
+	// 按分隔符分割字符串
+	parts := re.Split(input, -1)
+	// 首字母大写
+	for i := range parts {
+		parts[i] = strings.Title(parts[i])
+	}
+	// 拼接成单个字符串
+	return strings.Join(parts, "")
 }
