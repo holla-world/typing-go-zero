@@ -29,7 +29,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/gen v0.3.26
 	gorm.io/gorm v1.25.10
-	gorm.io/plugin/dbresolver v1.5.0
 	gorm.io/rawsql v1.0.2
 )
 
@@ -137,6 +136,7 @@ require (
 	gorm.io/datatypes v1.1.1-0.20230130040222-c43177d3cf8c // indirect
 	gorm.io/driver/mysql v1.4.4 // indirect
 	gorm.io/hints v1.1.0 // indirect
+	gorm.io/plugin/dbresolver v1.5.0 // indirect
 	k8s.io/api v0.29.3 // indirect
 	k8s.io/apimachinery v0.29.3 // indirect
 	k8s.io/client-go v0.29.3 // indirect
