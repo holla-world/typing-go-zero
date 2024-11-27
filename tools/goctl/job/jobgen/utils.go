@@ -86,3 +86,11 @@ func toCamelCase(input string) string {
 	// 拼接成单个字符串
 	return strings.Join(parts, "")
 }
+
+func toLowerFirst(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+	// 获取首字符并转换为小写，拼接剩余部分
+	return strings.ToLower(string(s[0])) + s[1:]
+}

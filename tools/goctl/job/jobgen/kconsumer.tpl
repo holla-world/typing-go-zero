@@ -27,7 +27,7 @@ func Run{{.ConsumerHandle}}(ctx context.Context, svcCtx *svc.ServiceContext) err
 }
 
 func New{{.ConsumerHandle}}(ctx context.Context, svcCtx *svc.ServiceContext) queue.MessageQueue {
-	consumerConf := xkafka.GetKqConsumerConfByName({{.ConsumerName}}, svcCtx.XvcCtx.Config.KqConsumer)
+	consumerConf := xkafka.GetKqConsumerConfByName({{.ConsumerNameVar}}, svcCtx.XvcCtx.Config.KqConsumer)
 	return xkafka.NewConsumer(consumerConf, func() kq.ConsumeHandler {
 		return &{{.ConsumerHandle}}{
 			ctx:    ctx,

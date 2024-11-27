@@ -29,7 +29,8 @@ const (
 )
 
 const (
-	routesFilename = "routes"
+	routesFilename       = "routes"
+	consuemrVarsFilename = "vars"
 )
 
 const (
@@ -210,6 +211,7 @@ func genJobCode(cronFile string, daemonFile string, kconsumerFile string) error 
 	if cfgKconsumer != nil {
 		genKConsumers(dir, rootPkg, cfgKconsumer.KqConsumer.Consumers)
 	}
+	_ = genKConsumerVars(dir, rootPkg, cfgKconsumer.KqConsumer.Consumers)
 
 	return nil
 }
@@ -228,6 +230,7 @@ func genKConsumer(dir, rootPkg string, kconsumerCfg KConsumerItem) error {
 	if err != nil {
 		return err
 	}
+	varV := toLowerFirst(toCamelCase(kconsumerCfg.Name))
 	return genFile(fileGenConfig{
 		dir:             dir,
 		subdir:          kConsumerPath,
@@ -237,12 +240,48 @@ func genKConsumer(dir, rootPkg string, kconsumerCfg KConsumerItem) error {
 		templateFile:    kconsumerTemplateFile,
 		builtinTemplate: kconsumerTemplate,
 		data: map[string]any{
-			"PkgName":        pkgName,
-			"ImportPackages": genKconsumerImports(rootPkg),
-			"ConsumerHandle": consumerHandle,
-			"ConsumerName":   kconsumerCfg.Name,
-			"ConsumerGroup":  kconsumerCfg.Group,
-			"ConsumerTopic":  kconsumerCfg.Topic,
+			"PkgName":         pkgName,
+			"ImportPackages":  genKconsumerImports(rootPkg),
+			"ConsumerHandle":  consumerHandle,
+			"ConsumerNameVar": varV,
+			"ConsumerName":    kconsumerCfg.Name,
+			"ConsumerGroup":   kconsumerCfg.Group,
+			"ConsumerTopic":   kconsumerCfg.Topic,
+		},
+	})
+}
+
+func genKConsumerVars(dir, rootPkg string, kconsumerCfgs []KConsumerItem) error {
+
+	kConsumerPath := consumerDir
+	var builder strings.Builder
+	for _, kconsumerCfg := range kconsumerCfgs {
+		varV := toLowerFirst(toCamelCase(kconsumerCfg.Name))
+		builder.WriteString(fmt.Sprintf("%s = \"%s\"", varV, kconsumerCfg.Name))
+		builder.WriteString("\n")
+	}
+
+	varFilename, err := format.FileNamingFormat(config.DefaultFormat, consuemrVarsFilename)
+	if err != nil {
+		return err
+	}
+	varFilename = varFilename + ".go"
+	filename := path.Join(dir, consumerDir, varFilename)
+	os.Remove(filename)
+
+	pkgName := kConsumerPath[strings.LastIndex(kConsumerPath, "/")+1:]
+
+	return genFile(fileGenConfig{
+		dir:             dir,
+		subdir:          kConsumerPath,
+		filename:        varFilename,
+		templateName:    "kconsumerVarsTemplate",
+		category:        category,
+		templateFile:    kconsumerVarsTemplateFile,
+		builtinTemplate: kconsumerVarsTemplate,
+		data: map[string]any{
+			"PkgName": pkgName,
+			"Vars":    strings.TrimSpace(builder.String()),
 		},
 	})
 }
