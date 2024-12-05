@@ -222,6 +222,9 @@ func genRouteImports(parentPkg string, api *spec.ApiSpec) string {
 	importSet := collection.NewSet()
 	importSet.AddStr(fmt.Sprintf("\"%s\"", pathx.JoinPackages(parentPkg, contextDir)))
 	for _, group := range api.Service.Groups {
+		if group.GetAnnotation("auth") != "false" {
+			importSet.AddStr(fmt.Sprintf("\"%s\"", pathx.JoinPackages(parentPkg, middlewareDir)))
+		}
 		for _, route := range group.Routes {
 			folder := route.GetAnnotation(groupProperty)
 			if len(folder) == 0 {

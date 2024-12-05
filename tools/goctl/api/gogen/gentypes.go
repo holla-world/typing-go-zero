@@ -68,10 +68,34 @@ func genTypes(dir string, cfg *config.Config, api *spec.ApiSpec) error {
 	})
 }
 
+func writeEnum(writer io.Writer, tp spec.EnumType) error {
+	// type NumType int32 // 数字枚举
+	//
+	// const (
+	//	NumTypeAll  NumType = 0 // 全部
+	//	NumTypePart NumType = 1 // 部分
+	// )
+	fmt.Fprintf(writer, "type %s %s %s \n", util.Title(tp.Name), tp.GoType, tp.Comment)
+	fmt.Fprintf(writer, "const (\n")
+	for _, member := range tp.Members {
+		if tp.GoType == "string" {
+			fmt.Fprintf(writer, "   %s %s = \"%s\" %s\n", member.Name, member.GoType, member.Value, member.Comment)
+		} else {
+			fmt.Fprintf(writer, "   %s %s = %s %s\n", member.Name, member.GoType, member.Value, member.Comment)
+		}
+	}
+	fmt.Fprintf(writer, ")\n")
+	return nil
+}
+
 func writeType(writer io.Writer, tp spec.Type) error {
 	structType, ok := tp.(spec.DefineStruct)
 	if !ok {
 		return fmt.Errorf("unspport struct type: %s", tp.Name())
+	}
+	if spec.IsEnumType(structType) {
+		enum := spec.ToEnumType(structType)
+		return writeEnum(writer, enum)
 	}
 
 	fmt.Fprintf(writer, "type %s struct {\n", util.Title(tp.Name()))

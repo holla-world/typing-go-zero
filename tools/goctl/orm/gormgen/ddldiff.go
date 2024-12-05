@@ -176,10 +176,11 @@ func doDDlCompare(filePath string, cfg GenerateSpec) {
 		if !ok {
 			continue
 		}
-		if v.Shards <= 1 {
+		if v.Shards <= 1 || v.Shards > maxShards {
 			fmt.Printf("上线前请执行DDL：%s\n", ddl)
 			return
 		}
+
 		for i := 0; i < v.Shards; i++ {
 			s := strings.ReplaceAll(ddl, v.TableName, fmt.Sprintf("%s_%d", v.TableName, i))
 			fmt.Printf("上线前请执行DDL：%s\n", s)

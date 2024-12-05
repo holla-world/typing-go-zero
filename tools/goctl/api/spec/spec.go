@@ -146,4 +146,19 @@ type (
 		Properties map[string]string
 		Text       string
 	}
+
+	// EnumMember describes the field of a enum
+	EnumMember struct {
+		Name    string
+		GoType  string
+		Value   string
+		Comment string
+	}
+
+	EnumType struct {
+		Name    string
+		GoType  string
+		Comment string
+		Members []EnumMember
+	}
 )

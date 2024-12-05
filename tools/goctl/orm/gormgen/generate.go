@@ -20,6 +20,10 @@ import (
 	"github.com/zeromicro/go-zero/tools/goctl/pkg/golang"
 )
 
+const (
+	maxShards = 1000
+)
+
 func Gen(src, pkg string) error {
 	g := gen.NewGenerator(gen.Config{
 		OutPath:           "internal/repo/" + pkg,
@@ -202,7 +206,7 @@ func parseTableName(origin string) string {
 func printDDL(cfg GenerateSpec) {
 	// CREATE TABLE post_likes_1 LIKE post_likes;
 	for _, v := range cfg.TableSpec {
-		if v.Shards <= 1 || v.Shards >= 1000 {
+		if v.Shards <= 1 || v.Shards >= maxShards {
 			continue
 		}
 		for i := 0; i < v.Shards; i++ {
@@ -338,7 +342,7 @@ func insertModelMeth(cfg GenerateSpec, g *gen.Generator) error {
 		return err
 	}
 	for _, v := range cfg.TableSpec {
-		if v.Shards <= 1 || v.Shards >= 1000 {
+		if v.Shards <= 1 || v.Shards >= maxShards {
 			continue
 		}
 		var rendered bytes.Buffer
