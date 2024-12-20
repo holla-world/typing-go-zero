@@ -29,6 +29,7 @@ type Spec struct {
 	ShardKeyName   string      `json:"shard_key,omitempty"`
 	ShardKeyGoType string      `json:"shard_key_go_type,omitempty"`
 	EnumFields     []EnumField `json:"enum_fields"`
+	IsHidden       bool        `json:"is_hidden,omitempty"`
 }
 
 type GenerateSpec struct {
