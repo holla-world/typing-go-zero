@@ -320,11 +320,6 @@ func insertEnums(cfg GenerateSpec, g *gen.Generator) error {
 		if len(spec.EnumFields) == 0 {
 			continue
 		}
-		// 隐藏表仅生成枚举
-		if spec.IsHidden {
-			onlyEnumFile(g, spec)
-			continue
-		}
 
 		filePath := path.Join(g.ModelPkgPath, fmt.Sprintf("%s.gen.go", spec.TableName))
 
