@@ -124,18 +124,13 @@ go get -u github.com/zeromicro/go-zero
    # For Mac
    brew install goctl
    
-   # docker for amd64 architecture
+   # docker for all platforms
    docker pull kevinwan/goctl
-   # run goctl like
+   # run goctl
    docker run --rm -it -v `pwd`:/app kevinwan/goctl --help
-   
-   # docker for arm64(Mac) architecture
-   docker pull kevinwan/goctl:latest-arm64
-   # run goctl like
-   docker run --rm -it -v `pwd`:/app kevinwan/goctl:latest-arm64 --help
    ```
    
-   make sure goctl is executable.
+   make sure goctl is executable and in your $PATH.
    
 3. Create the API file, like greet.api, you can install the plugin of goctl in vs code, api syntax is supported.
 
@@ -194,7 +189,6 @@ go get -u github.com/zeromicro/go-zero
 
    ```shell
    cd greet
-   go mod init
    go mod tidy
    go run greet.go -f etc/greet-api.yaml
    ```
@@ -256,7 +250,7 @@ go-zero enlisted in the [CNCF Cloud Native Landscape](https://landscape.cncf.io/
 
 ## Give a Star! ⭐
 
-If you like or are using this project to learn or start your solution, please give it a star. Thanks!
+If you like this project or are using it to learn or start your own solution, give it a star to get updates on new releases. Your support matters!
 
 ## Buy me a coffee
 

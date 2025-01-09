@@ -12,7 +12,7 @@ import (
 
 const (
 	Name = "protoc-gen-go"
-	url  = "google.golang.org/protobuf/cmd/protoc-gen-go@v1.33.0"
+	url  = "google.golang.org/protobuf/cmd/protoc-gen-go@v1.35.2"
 )
 
 func Install(cacheDir string) (string, error) {
