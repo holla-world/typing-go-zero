@@ -85,6 +85,18 @@ func writeEnum(writer io.Writer, tp spec.EnumType) error {
 		}
 	}
 	fmt.Fprintf(writer, ")\n")
+
+	methStrTpl := `func (t %s) String() string  {
+	return string(t)
+}`
+	methIntTpl := `func (t %s) Int32() int32  {
+	return int32(t)
+}`
+	if tp.GoType == "string" {
+		fmt.Fprintf(writer, methStrTpl, util.Title(tp.Name))
+	} else {
+		fmt.Fprintf(writer, methIntTpl, util.Title(tp.Name))
+	}
 	return nil
 }
 
