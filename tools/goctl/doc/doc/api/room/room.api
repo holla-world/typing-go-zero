@@ -1,0 +1,49 @@
+syntax = "v1"
+
+info(
+    title: "房间相关客户端api"
+    desc: "音视频直播房间相关的客户api定义"
+    author: ""
+    email: ""
+    version: ""
+)
+
+
+type (
+    GetRoomLaunchInfoReq{
+    }
+
+    GetRoomLaunchInfoResp {
+        VoiceRoom GetRoomLaunchInfoRespVoiceRoom `json:"voice_room"`
+        LiveRoom GetRoomLaunchInfoRespLiveRoom `json:"live_room"`
+    }
+
+    GetRoomLaunchInfoRespVoiceRoom {
+        Topic GetRoomLaunchInfoRespRoomTopic `json:"topic"`
+        Background GetRoomLaunchInfoRespRoomBackground `json:"background"`
+    }
+
+    GetRoomLaunchInfoRespLiveRoom {
+        Topic GetRoomLaunchInfoRespRoomTopic `json:"topic"`
+    }
+
+    GetRoomLaunchInfoRespRoomTopic {
+        TopicID     int    `json:"topic_id"`
+        TopicType   int    `json:"topic_type"`
+        TopicName   string `json:"topic_name"`
+        Proportion  int    `json:"proportion"`
+        IsLastTopic int    `json:"is_last_topic"`
+        Extra       string `json:"extra"`
+    }
+
+    GetRoomLaunchInfoRespRoomBackground {
+        ID        string `json:"id"`
+        Type      int    `json:"type"`
+        Name      string `json:"name"`
+        ExpireTime int64 `json:"expire_time"`  // 使用 int64 可以更好地处理时间戳
+        URL       string `json:"url"`
+        AniURL    string `json:"ani_url"`
+    }
+
+)
+

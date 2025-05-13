@@ -1,0 +1,184 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "definitions": {
+    "Goctl_apiGetRoomLaunchInfoReq": {
+      "properties": {},
+      "title": "Goctl_apiGetRoomLaunchInfoReq",
+      "type": "object"
+    },
+    "Goctl_apiGetRoomLaunchInfoResp": {
+      "properties": {
+        "live_room": {
+          "$ref": "#/definitions/Goctl_apiGetRoomLaunchInfoRespLiveRoom"
+        },
+        "voice_room": {
+          "$ref": "#/definitions/Goctl_apiGetRoomLaunchInfoRespVoiceRoom"
+        }
+      },
+      "required": [
+        "voice_room",
+        "live_room"
+      ],
+      "title": "Goctl_apiGetRoomLaunchInfoResp",
+      "type": "object"
+    },
+    "Goctl_apiGetRoomLaunchInfoRespLiveRoom": {
+      "properties": {
+        "topic": {
+          "$ref": "#/definitions/Goctl_apiGetRoomLaunchInfoRespRoomTopic"
+        }
+      },
+      "required": [
+        "topic"
+      ],
+      "title": "Goctl_apiGetRoomLaunchInfoRespLiveRoom",
+      "type": "object"
+    },
+    "Goctl_apiGetRoomLaunchInfoRespRoomBackground": {
+      "properties": {
+        "ani_url": {
+          "type": "string"
+        },
+        "expire_time": {
+          "description": "使用 int64 可以更好地处理时间戳",
+          "format": "int64",
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "name",
+        "expire_time",
+        "url",
+        "ani_url"
+      ],
+      "title": "Goctl_apiGetRoomLaunchInfoRespRoomBackground",
+      "type": "object"
+    },
+    "Goctl_apiGetRoomLaunchInfoRespRoomTopic": {
+      "properties": {
+        "extra": {
+          "type": "string"
+        },
+        "is_last_topic": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "proportion": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "topic_id": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "topic_name": {
+          "type": "string"
+        },
+        "topic_type": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "topic_id",
+        "topic_type",
+        "topic_name",
+        "proportion",
+        "is_last_topic",
+        "extra"
+      ],
+      "title": "Goctl_apiGetRoomLaunchInfoRespRoomTopic",
+      "type": "object"
+    },
+    "Goctl_apiGetRoomLaunchInfoRespVoiceRoom": {
+      "properties": {
+        "background": {
+          "$ref": "#/definitions/Goctl_apiGetRoomLaunchInfoRespRoomBackground"
+        },
+        "topic": {
+          "$ref": "#/definitions/Goctl_apiGetRoomLaunchInfoRespRoomTopic"
+        }
+      },
+      "required": [
+        "topic",
+        "background"
+      ],
+      "title": "Goctl_apiGetRoomLaunchInfoRespVoiceRoom",
+      "type": "object"
+    }
+  },
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "paths": {
+    "/api/v2/live/room/get-room-launch-info": {
+      "post": {
+        "description": "获取开播页面信息",
+        "operationId": "getRoomLaunchInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Goctl_apiGetRoomLaunchInfoResp"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "result",
+                "message",
+                "data"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "获取开播页面信息",
+        "tags": [
+          "live/room"
+        ],
+        "x-apifox-folder": "Goctl_api"
+      }
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "apiKey": {
+      "description": "Enter JWT Bearer token **_only_**",
+      "in": "header",
+      "name": "Authorization",
+      "type": "apiKey"
+    }
+  },
+  "swagger": "2.0"
+}

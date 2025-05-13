@@ -15,6 +15,7 @@ import (
 	"github.com/zeromicro/go-zero/tools/goctl/api"
 	"github.com/zeromicro/go-zero/tools/goctl/bug"
 	"github.com/zeromicro/go-zero/tools/goctl/config"
+	"github.com/zeromicro/go-zero/tools/goctl/doc"
 	"github.com/zeromicro/go-zero/tools/goctl/docker"
 	"github.com/zeromicro/go-zero/tools/goctl/env"
 	"github.com/zeromicro/go-zero/tools/goctl/gateway"
@@ -121,6 +122,7 @@ func init() {
 	rootCmd.AddCommand(migrate.Cmd, quickstart.Cmd, rpc.Cmd, tpl.Cmd, upgrade.Cmd, config.Cmd)
 	rootCmd.AddCommand(orm.Cmd, queue.Cmd)
 	rootCmd.AddCommand(job.Cmd)
+	rootCmd.AddCommand(doc.Cmd)
 	rootCmd.Command.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
 	rootCmd.MustInit()
 }

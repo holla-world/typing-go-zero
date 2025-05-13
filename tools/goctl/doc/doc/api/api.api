@@ -1,0 +1,29 @@
+syntax = "v1"
+
+import "room/room.api" //倒入请求和响应结果定义
+
+info (
+	title:   "直播服务api接口"
+	desc:    "直播服务api接口"
+	author:  ""
+	date:    ""
+	version: "v1"
+)
+
+
+@server (
+	group:  room  //房间功能
+	prefix: /api/v2/live/room
+	auth:   false
+)
+service Live {
+	@doc (
+		summary:     "获取开播页面信息"
+		description: "获取开播页面信息"
+	)
+	@handler getRoomLaunchInfo //TODO 第二版本实现脚手架的入口方法
+	post /get-room-launch-info (GetRoomLaunchInfoReq) returns (GetRoomLaunchInfoResp)
+
+
+}
+
