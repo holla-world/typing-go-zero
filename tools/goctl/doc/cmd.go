@@ -15,10 +15,10 @@ func init() {
 	)
 
 	cmdFlags.StringVar(&docgen.ApiFolder, "api_path")
-	cmdFlags.StringVar(&docgen.AdminFolder, "internal_path")
-	cmdFlags.StringVar(&docgen.InternalFolder, "admin_path")
+	cmdFlags.StringVar(&docgen.AdminFolder, "admin_path")
+	cmdFlags.StringVar(&docgen.InternalFolder, "internal_path")
 	cmdFlags.StringVar(&docgen.ApiProjectId, "api_project_id")
 	cmdFlags.StringVar(&docgen.AdminProjectId, "admin_project_id")
-	cmdFlags.StringVar(&docgen.InternalProjectId, "api_project_id")
+	cmdFlags.StringVar(&docgen.InternalProjectId, "internal_project_id")
 
 }
