@@ -194,8 +194,8 @@ func getServiceName(fileName string) string {
 	parts := strings.Split(wd, "/")
 	last := parts[len(parts)-1]
 	lastPart := last
-	if idx := strings.LastIndex(last, "-"); idx != -1 {
-		lastPart = last[idx+1:]
-	}
+	// if idx := strings.LastIndex(last, "-"); idx != -1 {
+	// 	lastPart = last[idx+1:]
+	// }
 	return strings.Title(lastPart) + "_" + fileName
 }

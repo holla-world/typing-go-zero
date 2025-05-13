@@ -10,11 +10,13 @@ const (
 )
 
 var (
-	ApiFolder      string
-	AdminFolder    string
-	ApiProjectId   string
-	AdminProjectId string
-	ApifoxToken    string
+	ApiFolder         string
+	AdminFolder       string
+	InternalFolder    string
+	ApiProjectId      string
+	AdminProjectId    string
+	InternalProjectId string
+	ApifoxToken       string
 )
 
 func GenDoc(_ *cobra.Command, _ []string) error {
@@ -37,6 +39,15 @@ func GenDoc(_ *cobra.Command, _ []string) error {
 			APIFolder:       AdminFolder,
 			APIPath:         fmt.Sprintf("%s/admin.api", AdminFolder),
 			ApifoxProjectID: AdminProjectId,
+		})
+	}
+
+	if len(InternalFolder) > 0 {
+		configs = append(configs, APIDocConfig{
+			FileName:        "internal",
+			APIFolder:       InternalFolder,
+			APIPath:         fmt.Sprintf("%s/internal.api", InternalFolder),
+			ApifoxProjectID: InternalProjectId,
 		})
 	}
 
