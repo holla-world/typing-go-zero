@@ -13,6 +13,7 @@ import (
 	"text/template"
 	"unicode"
 
+	"github.com/gookit/color"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"gorm.io/rawsql"
@@ -52,6 +53,10 @@ func Gen(src, pkg string) error {
 
 	for _, v := range cfg.TableSpec {
 		modify := gen.FieldModify(func(field gen.Field) gen.Field {
+			customType := getCustomType(field.ColumnComment)
+			if customType != "" {
+				field.Type = customType
+			}
 			cleanTags(field)
 			ef, ok := ParseEnum(v.ModelName, field)
 			if !ok {
@@ -97,7 +102,20 @@ func Gen(src, pkg string) error {
 	}
 	printDDL(cfg)
 	doDDlCompare(src, cfg)
+	color.Greenf(doc)
 	return nil
+}
+
+func getCustomType(comment string) string {
+	switch {
+	case strings.Contains(comment, "float32"):
+		return "float32"
+	case strings.Contains(comment, "float64"):
+		return "float64"
+	case strings.Contains(comment, "decimal"):
+		return "decimal.Decimal"
+	}
+	return ""
 }
 
 func cleanTags(field gen.Field) {
