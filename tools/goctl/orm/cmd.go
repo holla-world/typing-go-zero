@@ -12,5 +12,7 @@ var (
 
 func init() {
 	Cmd.Flags().StringVarP(&command.VarStringSrc, "src", "s")
-	Cmd.Flags().StringVarP(&command.VarStringPkg, "pkg", "p")
+	Cmd.Flags().StringVarPWithDefaultValue(&command.VarStringBasePath, "base", "b", "internal/repo")
+	Cmd.Flags().StringVarPWithDefaultValue(&command.VarStringPkg, "pkg", "p", "query")
+	Cmd.Flags().StringVarPWithDefaultValue(&command.VarStringModel, "model", "m", "model")
 }

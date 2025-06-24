@@ -25,10 +25,10 @@ const (
 	maxShards = 1000
 )
 
-func Gen(src, pkg string) error {
+func Gen(src, basePath, pkg, model string) error {
 	g := gen.NewGenerator(gen.Config{
-		OutPath:           "internal/repo/" + pkg,
-		ModelPkgPath:      "internal/repo/model",
+		OutPath:           path.Join(basePath, pkg),
+		ModelPkgPath:      path.Join(basePath, model),
 		FieldWithIndexTag: true,
 		FieldWithTypeTag:  true,
 	})
