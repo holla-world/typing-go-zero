@@ -2,6 +2,8 @@ package {{.PkgName}}
 
 import (
     "context"
+"github.com/holla-world/typing-golib/xzero/xqueue"
+
 	{{.ImportPackages}}
 )
 
@@ -17,7 +19,7 @@ func New{{.LogicName}}Logic(ctx context.Context, svcCtx *svc.ServiceContext) *{{
 	}
 }
 
-func (l *{{.LogicName}}Logic) {{.LogicName}}(key string, msg *{{.MsgMetaPkgShort}}.{{.MsgMeta}}) error {
+func (l *{{.LogicName}}Logic) {{.LogicName}}(raw xqueue.MsgOut, msg *{{.MsgMetaPkgShort}}.{{.MsgMeta}}) error {
 
 	return nil
 }

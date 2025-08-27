@@ -1,48 +1,48 @@
 package {{.PkgName}}
 
 import (
-    "context"
-    "encoding/json"
-    "time"
+"context"
+"encoding/json"
+"time"
 
-	"github.com/zeromicro/go-queue/kq"
-    "github.com/zeromicro/go-zero/core/logx"
-    "github.com/zeromicro/go-zero/core/queue"
+"github.com/holla-world/typing-golib/xzero/xlog"
+"github.com/holla-world/typing-golib/xzero/xqueue"
+"github.com/holla-world/typing-golib/xzero/xqueue/kafkaq"
+"github.com/zeromicro/go-zero/core/logx"
+
 	{{.ImportPackages}}
 )
 
-func New{{.HandlerName}}ConsumerHandler(kqConf kq.KqConf, svcCtx *svc.ServiceContext) queue.MessageQueue {
-	return kq.MustNewQueue(kqConf, new{{.HandlerName}}Consumer(svcCtx))
+func New{{.HandlerName}}ConsumerHandler(cfg kafkaq.KqConf, svcCtx *svc.ServiceContext) xqueue.Consumer {
+return xqueue.MustKqConsumer(cfg, new{{.HandlerName}}Consumer(cfg, svcCtx))
 }
 
 type {{.LHandlerName}}Consumer struct {
 	svcCtx *svc.ServiceContext
+cfg    *kafkaq.KqConf
 }
 
-func new{{.HandlerName}}Consumer(svcCtx *svc.ServiceContext) {{.LHandlerName}}Consumer {
+func new{{.HandlerName}}Consumer(cfg kafkaq.KqConf, svcCtx *svc.ServiceContext) {{.LHandlerName}}Consumer {
 	return {{.LHandlerName}}Consumer{
 		svcCtx: svcCtx,
+cfg:    &cfg,
 	}
 }
 
-func (c {{.LHandlerName}}Consumer) Consume(key, value string) (err error) {
-	ctx, cancelFunc := context.WithTimeout(context.Background(), {{.Timeout}}*time.Second)
-	defer cancelFunc()
+func (c {{.LHandlerName}}Consumer) Consume(ctx1 context.Context, msg xqueue.MsgOut) error {
+ctx, cancel := context.WithTimeout(ctx1, time.Second*time.Duration(c.cfg.Timeout))
+defer cancel()
 
-	msg := {{.MsgMetaPkgShort}}.{{.MsgMeta}}{}
-	if err = json.Unmarshal([]byte(value), &msg); err != nil {
-		logx.
-			WithContext(ctx).
-			Errorw(
-				"kafka msg unmarshal error",
-				logx.Field("error", err),
-				logx.Field("key", key),
-				logx.Field("msg", value),
-				logx.Field("struct", "{{.MsgMeta}}"),
-			)
-		return
+dst := {{.MsgMetaPkgShort}}.{{.MsgMeta}}{}
+if err := json.Unmarshal(msg.Value(), &dst); err != nil {
+xlog.Errorm(ctx,
+"unmarshal queue msg err",
+logx.Field("err", err),
+logx.Field("msg", msg.Value()),
+logx.Field("dst", "{{.MsgMeta}}"),
+)
+return err
 	}
 
-	l := logic.New{{.HandlerName}}Logic(ctx, c.svcCtx)
-	return l.{{.HandlerName}}(key, &msg)
+return logic.New{{.HandlerName}}Logic(ctx, c.svcCtx).{{.HandlerName}}(msg, &dst)
 }
