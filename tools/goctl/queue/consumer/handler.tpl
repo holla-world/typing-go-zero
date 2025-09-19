@@ -30,7 +30,8 @@ cfg:    &cfg,
 }
 
 func (c {{.LHandlerName}}Consumer) Consume(ctx1 context.Context, msg xqueue.MsgOut) error {
-ctx, cancel := context.WithTimeout(ctx1, time.Second*time.Duration(c.cfg.Timeout))
+timeout := time.Duration(c.cfg.Timeout) * time.Second
+ctx, cancel := context.WithTimeout(ctx1, timeout)
 defer cancel()
 
 dst := {{.MsgMetaPkgShort}}.{{.MsgMeta}}{}
